@@ -35,21 +35,34 @@ class App extends Component {
     }
 
     render() {
+        const style = {
+            backgroundColor: 'white',
+            font: 'inherit',
+            border: '1px solid blue',
+            padding: '8px',
+            cursor: 'pointer'
+        }
+
         return (
             <div className="App">
                 <h1>Hi, I'm a React App</h1>
                 <p>This is really working!</p>
                 {/*不推荐此种方式，有性能问题*/}
-                <button onClick={() => this.switchNameHandler('Maximilian!!')}>Switch Name</button>
-                <Person name={this.state.persons[0].name} age="28"/>
-                <Person
-                    name={this.state.persons[1].name}
-                    age="29"
-                    click={this.switchNameHandler.bind(this, 'Max!')}
-                    changed={this.nameChangeHandler}
-                >My Hobbies: Racing</Person>
-                {/*推荐bind的方式*/}
-                <Person name="Stephanie" age="26" />
+                <button
+                    style={style}
+                    onClick={() => this.switchNameHandler('Maximilian!!')}
+                >Switch Name</button>
+                <div>
+                    <Person name={this.state.persons[0].name} age="28"/>
+                    <Person
+                        name={this.state.persons[1].name}
+                        age="29"
+                        click={this.switchNameHandler.bind(this, 'Max!')}
+                        changed={this.nameChangeHandler}
+                    >My Hobbies: Racing</Person>
+                    {/*推荐bind的方式*/}
+                    <Person name="Stephanie" age="26" />
+                </div>
             </div>
         );
         // 以上jsx代码会被React编译转换为此js代码
