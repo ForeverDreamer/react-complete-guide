@@ -6,32 +6,34 @@ import Person from './Person/Person'
 class App extends Component {
     state = {
         persons: [
-            { name: 'Max', age: 28 },
-            { name: 'Manu', age: 29 },
-            { name: 'Stephanie', age: 26 }
+            { id: 'dsjkld', name: 'Max', age: 28 },
+            { id: 'sdkdfj', name: 'Manu', age: 29 },
+            { id: 'ownjge', name: 'Stephanie', age: 26 }
         ],
-        otherState: 'Some other value'
+        otherState: 'Some other value',
+        showPersons: true
     }
 
-    switchNameHandler = (newName) => {
-        // Don't do this: this.state.persons[0].name = 'Maximilian'
-        this.setState({
-            persons: [
-                { name: newName, age: 28 },
-                { name: 'Manu', age: 29 },
-                { name: 'Stephanie', age: 27 }
-            ]
-        })
+    nameChangeHandler = (event, id) => {
+        const personIndex = this.state.persons.findIndex(p => { return p.id === id })
+        const person = {...this.state.persons[personIndex]};
+        // const person = Object.assign({}, this.state.persons[personIndex]);
+        person.name = event.target.value;
+        const persons = [...this.state.persons];
+        persons[personIndex] = person
+
+        this.setState({persons: persons})
     }
 
-    nameChangeHandler = event => {
-        this.setState({
-            persons: [
-                { name: 'Max', age: 28 },
-                { name: event.target.value, age: 29 },
-                { name: 'Stephanie', age: 26 }
-            ]
-        })
+    deletePersonHandler = (personIndex) => {
+        // const persons = this.state.persons.splice();
+        const persons = [...this.state.persons];
+        persons.splice(personIndex, 1);
+        this.setState({persons: persons})
+    }
+
+    togglePersonsHandler = () => {
+        this.setState({showPersons: !this.state.showPersons})
     }
 
     render() {
@@ -43,6 +45,23 @@ class App extends Component {
             cursor: 'pointer'
         }
 
+        let persons = null;
+
+        if (this.state.showPersons) {
+            persons = (
+                <div>
+                    {this.state.persons.map((person, index) => {
+                        return <Person
+                            key={person.id}
+                            click={() => this.deletePersonHandler(index)}
+                            name={person.name}
+                            age={person.age}
+                            changed={(event) => this.nameChangeHandler(event, person.id)}/>
+                    })}
+                </div>
+            )
+        }
+
         return (
             <div className="App">
                 <h1>Hi, I'm a React App</h1>
@@ -50,19 +69,23 @@ class App extends Component {
                 {/*不推荐此种方式，有性能问题*/}
                 <button
                     style={style}
-                    onClick={() => this.switchNameHandler('Maximilian!!')}
-                >Switch Name</button>
-                <div>
-                    <Person name={this.state.persons[0].name} age="28"/>
-                    <Person
-                        name={this.state.persons[1].name}
-                        age="29"
-                        click={this.switchNameHandler.bind(this, 'Max!')}
-                        changed={this.nameChangeHandler}
-                    >My Hobbies: Racing</Person>
-                    {/*推荐bind的方式*/}
-                    <Person name="Stephanie" age="26" />
-                </div>
+                    onClick={this.togglePersonsHandler}
+                >Toggle Persons</button>
+                {persons}
+                {/*{*/}
+                {/*    this.state.showPersons ?*/}
+                {/*        <div>*/}
+                {/*            <Person name={this.state.persons[0].name} age="28"/>*/}
+                {/*            <Person*/}
+                {/*                name={this.state.persons[1].name}*/}
+                {/*                age="29"*/}
+                {/*                /!*推荐bind的方式*!/*/}
+                {/*                click={this.switchNameHandler.bind(this, 'Max!')}*/}
+                {/*                changed={this.nameChangeHandler}*/}
+                {/*            >My Hobbies: Racing</Person>*/}
+                {/*            <Person name="Stephanie" age="26" />*/}
+                {/*        </div> : null*/}
+                {/*}*/}
             </div>
         );
         // 以上jsx代码会被React编译转换为此js代码
